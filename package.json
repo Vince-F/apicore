@@ -1,0 +1,23 @@
+{
+  "name": "apicore",
+  "version": "0.1.0",
+  "description": "A module providing class with basic to build REST API ",
+  "main": "lib/index.js",
+  "types": "lib/index",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build":"tsc"
+  },
+  "keywords": [
+    "api",
+    "rest"
+  ],
+  "author": "Vincent Francolin",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.11.1"
+  }
+}
