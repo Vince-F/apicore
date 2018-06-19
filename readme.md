@@ -28,5 +28,9 @@ Same as CrudApiController it relies on its router equivalent BaseRouterControlle
 for usual CRUD operations.
 
 ## Changelog
+### V0.2.0
+- add ApiResponse object allowing controller to send more than data (status, number of object etc).
+- add PermissionManager class to ApiControllers to structure API access through a class.
+
 ### V0.1.0
 Initial version.

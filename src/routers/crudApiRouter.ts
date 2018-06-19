@@ -20,37 +20,29 @@ export abstract class CrudApiRouter<Dao extends EntityDao> extends BaseApiRouter
         this.addRoute(HttpVerb.DELETE, "/:id", this.delete.bind(this));
     }
 
-    sendResponseFromPromise(promise: Promise<any>, res: express.Response) {
-        promise.then((result) => {
-            res.send({ success: true, result: result, count: Array.isArray(result) ? result.length : result ? 1 : 0 });
-        }).catch((error) => {
-            res.send({ success: false, error: error })
-        });
-    }
-
     create(req: express.Request, res: express.Response) {
         let data = req.body.data;
-        this.sendResponseFromPromise(this.ctrlInstance.create(data), res);
+        this.sendResponseFromPromise(this.ctrlInstance.create(data,req), res);
     }
 
     retrieve(req: express.Request, res: express.Response) {
         let id = req.params.id;
-        this.sendResponseFromPromise(this.ctrlInstance.retrieve(id), res);
+        this.sendResponseFromPromise(this.ctrlInstance.retrieve(id,req), res);
     }
 
     retrieveAll(req: express.Request, res: express.Response) {
-        this.sendResponseFromPromise(this.ctrlInstance.retrieveAll(), res);
+        this.sendResponseFromPromise(this.ctrlInstance.retrieveAll(req), res);
     }
 
     update(req: express.Request, res: express.Response) {
         let id = req.params.id;
         let data = req.body.data;
 
-        this.sendResponseFromPromise(this.ctrlInstance.update(id, data), res);
+        this.sendResponseFromPromise(this.ctrlInstance.update(id, data,req), res);
     }
 
     delete(req: express.Request, res: express.Response) {
         let id = req.params.id;
-        this.sendResponseFromPromise(this.ctrlInstance.delete(id), res);
+        this.sendResponseFromPromise(this.ctrlInstance.delete(id,req), res);
     }
 }

@@ -3,4 +3,5 @@ export declare enum HttpVerb {
     POST = "post",
     PUT = "put",
     DELETE = "delete",
+    PATCH = "patch",
 }
