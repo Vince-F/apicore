@@ -36,13 +36,13 @@ export abstract class CrudApiController<Dao extends EntityDao> extends BaseApiCo
                             } as ApiResponse;
                         });
                 } else {
-                    return {
+                    return Promise.reject({
                         status: access.status,
                         error: access.reason
-                    } as ApiResponse;
+                    } as ApiResponse);
                 }
             }).catch((errorObj) => {
-                return this.createResponseFromErrorObject(errorObj);
+                return Promise.reject(this.createResponseFromErrorObject(errorObj));
             });
     }
 
@@ -50,23 +50,25 @@ export abstract class CrudApiController<Dao extends EntityDao> extends BaseApiCo
         let entityDao = new this.daoClass();
         return entityDao.retrieve(id)
             .then((data) => {
-                return this.permissionMgr.canRead(this.entityName, req, data)
-                    .then((access) => {
-                        if (access.canAccess) {
-                            return {
-                                data: data as Dao,
-                                status: 200,
-                                count: 1
-                            } as ApiResponse;
-                        } else {
-                            return {
-                                status: access.status,
-                                error: access.reason
-                            } as ApiResponse;
-                        }
-                    }).catch((errorObj) => {
-                        return this.createResponseFromErrorObject(errorObj);
-                    });
+                return new Promise((resolve, reject) => {
+                    this.permissionMgr.canRead(this.entityName, req, data)
+                        .then((access) => {
+                            if (access.canAccess) {
+                                resolve({
+                                    data: data as Dao,
+                                    status: 200,
+                                    count: 1
+                                } as ApiResponse);
+                            } else {
+                                reject({
+                                    status: access.status,
+                                    error: access.reason
+                                } as ApiResponse);
+                            }
+                        }).catch((errorObj) => {
+                            reject(this.createResponseFromErrorObject(errorObj));
+                        });
+                }) as Promise<ApiResponse>;
             });
     }
 
@@ -74,23 +76,26 @@ export abstract class CrudApiController<Dao extends EntityDao> extends BaseApiCo
         let entityDao = new this.daoClass();
         return entityDao.retrieveAll()
             .then((data) => {
-                return this.permissionMgr.canRead(this.entityName, req, data)
+                return new Promise((resolve,reject) => {
+                    this.permissionMgr.canRead(this.entityName, req, data)
                     .then((access) => {
                         if (access.canAccess) {
-                            return {
+                            resolve({
                                 data: data as Array<Dao>,
                                 count: data.length,
                                 status: 200
-                            } as ApiResponse;
+                            } as ApiResponse);
                         } else {
-                            return {
+                            reject({
                                 status: access.status,
                                 error: access.reason
-                            } as ApiResponse;
+                            } as ApiResponse);
                         }
                     }).catch((errorObj) => {
-                        return this.createResponseFromErrorObject(errorObj);
+                        reject(this.createResponseFromErrorObject(errorObj));
                     });
+                }) as Promise<ApiResponse>;
+                
             });
     }
 
@@ -108,13 +113,13 @@ export abstract class CrudApiController<Dao extends EntityDao> extends BaseApiCo
                             } as ApiResponse;
                         });
                 } else {
-                    return {
+                    return Promise.reject({
                         status: access.status,
                         error: access.reason
-                    } as ApiResponse;
+                    } as ApiResponse);
                 }
             }).catch((errorObj) => {
-                return this.createResponseFromErrorObject(errorObj);
+                return Promise.reject(this.createResponseFromErrorObject(errorObj));
             });
     }
 
@@ -133,10 +138,10 @@ export abstract class CrudApiController<Dao extends EntityDao> extends BaseApiCo
                                     } as ApiResponse;
                                 });
                         } else {
-                            return {
+                            return Promise.reject({
                                 status: access.status,
                                 error: access.reason
-                            } as ApiResponse;
+                            } as ApiResponse);
                         }
                     });
             });
